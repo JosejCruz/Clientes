@@ -1,8 +1,7 @@
 import { useIonAlert } from '@ionic/react';
-import { strict } from 'assert';
 import axios from "axios";
-import React, { SyntheticEvent, useEffect, useState } from 'react'
-import { Redirect } from 'react-router';
+import React, { useEffect, useState } from 'react'
+import { Redirect, useHistory } from 'react-router';
 import Loading from '../common/Loading/Loading';
 import {ApiUrl} from '../service/api'
 
@@ -10,46 +9,53 @@ function Login() {
     const [login, setLogin] = useState(true);
     const [Spinner, setSpinner] = useState(false);
     const [Session, setSession] = useState({
-        User: "",
-        Password: ""
+        user: "",
+        password: ""
     })
     const [presentAlert] = useIonAlert();
-    const handleButton = ()=>{
-        setLogin(false);
-        setSpinner(true);
-        setTimeout(() => {
-            setLogin(true);
-            setSpinner(false);
-            // efecto Alert
-            presentAlert({
-                header: "Aviso",
-                subHeader: "Importante!",
-                message: "Usuario no Registrado",
-                buttons: ["OK"],
-              })
-        }, 5000);
-    }
+    let history = useHistory()
+    const handleButton = async() => {
+      setLogin(false);
+      setSpinner(true);
+        try {
+          const resp = await axios.post((ApiUrl + 'login'), Session);
+          console.log(resp.data);
+          localStorage.setItem('x-access-token', resp.data.token)
+          setLogin(true);
+          setSpinner(false);
+        } catch (error) {
+          setLogin(true);
+          setSpinner(false);
+          presentAlert({
+            header: "Aviso",
+            subHeader: "Importante!",
+            message: "Ocurrio un Error",
+            buttons: ["OK"],
+          });
+        }
+    };
 
     const DatosUsuario = (e:React.ChangeEvent<HTMLInputElement>)=>{
-        let valor = e.target.value;
-        let target = e.target.name;
-        let datos = Session;
-        datos[target] = valor;
-        setSession({ ...datos });
+      let valor = e.target.value;
+      let target = e.target.name;
+      let datos:any = Session;
+      datos[target] = valor;
+      setSession({ ...datos });
     }
 
     useEffect(() => {
       if (localStorage.getItem("x-access-token")) {
         const token = localStorage.getItem("x-access-token");
         try {
-            axios.get((ApiUrl + "content"), {
+            axios.get((ApiUrl + "auth"), {
                 headers: {
                     'x-access-token': `${token}`
                 }
             }).then((res) => {
                 console.log(res.data);
                 if (res.data != false) {
-                    return <Redirect to='/home'/>;
+                  console.log(res.data.auth)
+                  history.push('/home')
                 }
               });
         } catch (error) {
@@ -75,9 +81,9 @@ function Login() {
           <input
             className="input-text"
             type="text"
-            name="User"
+            name="user"
             onChange={DatosUsuario}
-            value={Session.User}
+            value={Session.user}
             placeholder="Usuario"
           />
         </div>
@@ -85,9 +91,9 @@ function Login() {
           <input
             className="input-text"
             type="password"
-            name="Password"
+            name="password"
             onChange={DatosUsuario}
-            value={Session.Password}
+            value={Session.password}
             placeholder="Contraseña"
           />
         </div>

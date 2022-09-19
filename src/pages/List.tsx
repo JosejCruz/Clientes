@@ -1,4 +1,4 @@
-import { IonButton, IonItem, IonLabel, IonMenuToggle } from '@ionic/react'
+import { IonItem, IonLabel, IonMenuToggle } from '@ionic/react'
 import React from 'react'
 import Item from '../components/Item';
 
