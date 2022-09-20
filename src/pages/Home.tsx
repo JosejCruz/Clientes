@@ -10,7 +10,7 @@ import List from './List';
 const Home: React.FC = () => {
   const [Spinner, setSpinner] = useState(false);
   const [Data, setData] = useState(false)
-
+  const [Content, setContent] = useState({'Cargando': true, 'lista': []})
   let history = useHistory()
   useEffect(()=>{
     setSpinner(true)
@@ -30,6 +30,7 @@ const Home: React.FC = () => {
               }else{
                 setSpinner(false)
                 setData(true)
+                setContent({'Cargando': false, 'lista': res.data})
               }
             });
       } catch (error) {
@@ -55,7 +56,7 @@ const Home: React.FC = () => {
       </div>
       <div className='grid-container'>
         <div className='grid-item-center'>{Spinner && <Loading/>}</div>
-        {Data && <List/>}
+        {Data && <List Content={Content}/>}
       </div>
     </>
   );

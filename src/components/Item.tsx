@@ -1,7 +1,9 @@
 import { IonContent, IonHeader, IonItem, IonList, IonMenu, IonTitle, IonToolbar } from '@ionic/react'
 import React from 'react'
-
-function Item() {
+interface Id{
+  'id': string
+}
+function Item(props:Id) {
   return (
     <IonMenu className='ancho' side="end" menuId="first" contentId="main">
       <IonHeader >
