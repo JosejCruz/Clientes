@@ -1,11 +1,12 @@
 import { IonContent, IonHeader, IonItem, IonList, IonMenu, IonTitle, IonToolbar } from '@ionic/react'
 import React from 'react'
-interface Id{
-  'id': string
+interface Listprops{
+  'lista': any
 }
-function Item(props:Id) {
+function Item(props: Listprops) {
+  console.log(props.lista)
   return (
-    <IonMenu className='ancho' side="end" menuId="first" contentId="main">
+    <IonMenu className='ancho' side="end" contentId={props.lista._id}>
       <IonHeader >
         <IonToolbar className='headerItem'>
           <IonTitle>Datos Item</IonTitle>
@@ -13,7 +14,8 @@ function Item(props:Id) {
       </IonHeader>
       <IonContent>
         <IonList>
-          <IonItem>Menu Item</IonItem>
+          <IonItem>Id: = {props.lista._id}</IonItem>
+          <IonItem>Nombre: = {props.lista.Paciente.nombre}</IonItem>
         </IonList>
       </IonContent>
     </IonMenu>

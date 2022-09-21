@@ -7,18 +7,19 @@ interface Listprops{
 function List(props:Listprops) {
   console.log(props.Content)
   let data = props.Content.lista;
+  console.log(data)
   return (
     <>
-    {data.map((contenido) => {
+    {data.map((contenido, index) => {
       return (
-        <>
-          <Item key={contenido._id} id={contenido._id} />
-          <IonMenuToggle key={contenido._id} id={contenido._id}>
+        <div key={index}>
+          <Item lista={data[index]} />
+          <IonMenuToggle id={contenido._id}>
             <IonItem button onClick={() => {}}>
-              <IonLabel>{contenido.Paciente}</IonLabel>
+              <IonLabel>{contenido.Paciente.nombre} {index}</IonLabel>
             </IonItem>
           </IonMenuToggle>
-        </>
+        </div>
       );
     })}
     </>
