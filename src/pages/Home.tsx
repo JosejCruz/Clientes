@@ -1,4 +1,4 @@
-import { IonSearchbar } from '@ionic/react';
+import { IonSearchbar, useIonAlert } from '@ionic/react';
 import axios from 'axios';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useHistory } from 'react-router';
@@ -11,37 +11,52 @@ const Home: React.FC = () => {
   const [Spinner, setSpinner] = useState(false);
   const [Data, setData] = useState(false)
   const [Content, setContent] = useState({'Cargando': true, 'lista': []})
+  const [presentAlert] = useIonAlert();
   let history = useHistory()
-  useEffect(()=>{
-    setSpinner(true)
+  useEffect(() => {
+    setSpinner(true);
     if (localStorage.getItem("x-access-token")) {
       const token = localStorage.getItem("x-access-token");
       try {
-          axios.get((ApiUrl + "content"), {
-              headers: {
-                  'x-access-token': `${token}`
-              }
-          }).then((res) => {
-              console.log(res.data);
-              if (res.data.auth == false) {
-                setSpinner(false)
-                console.log(res.data.auth)
-                history.push('/login')
-              }else{
-                setSpinner(false)
-                setData(true)
-                setContent({'Cargando': false, 'lista': res.data})
-              }
-            });
+        axios
+          .get(ApiUrl + "content", {
+            headers: {
+              "x-access-token": `${token}`,
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.auth == false) {
+              setSpinner(false);
+              console.log(res.data.auth);
+              history.push("/login");
+            } else {
+              setSpinner(false);
+              setData(true);
+              setContent({ Cargando: false, lista: res.data });
+            }
+          }).catch((error) => {
+            console.log(error.response.status)
+            if (error.response.status == 401) {
+              setSpinner(false)
+              presentAlert({
+                header: "Aviso",
+                subHeader: "Importante!",
+                message: "La sesión expiró",
+                buttons: ["OK"],
+              });
+              history.push("/login")
+            }
+          })
       } catch (error) {
-          console.log(error)
+        console.log(error);
       }
-    }else{
+    } else {
       console.log("No existe token");
-      setSpinner(false)
-      history.push('/login')
+      setSpinner(false);
+      history.push("/login");
     }
-  }, [])
+  }, []);
 
   return (
     <>
@@ -54,9 +69,9 @@ const Home: React.FC = () => {
           ></IonSearchbar>
         </div>
       </div>
-      <div className='grid-container'>
-        <div className='grid-item-center'>{Spinner && <Loading/>}</div>
-        {Data && <List Content={Content}/>}
+      <div className="grid-container">
+        <div className="grid-item-center">{Spinner && <Loading />}</div>
+        {Data && <List Content={Content} />}
       </div>
     </>
   );

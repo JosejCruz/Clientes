@@ -9,62 +9,87 @@ function Login() {
     const [login, setLogin] = useState(true);
     const [Spinner, setSpinner] = useState(false);
     const [Session, setSession] = useState({
-        user: "",
-        password: ""
-    })
+      user: "",
+      password: "",
+    });
     const [presentAlert] = useIonAlert();
-    let history = useHistory()
-    const handleButton = async() => {
+    let history = useHistory();
+    const handleButton = async () => {
       setLogin(false);
       setSpinner(true);
-        try {
-          const resp = await axios.post((ApiUrl + 'login'), Session);
-          console.log(resp.data);
-          localStorage.setItem('x-access-token', resp.data.token)
-          setLogin(true);
-          setSpinner(false);
-        } catch (error) {
-          setLogin(true);
-          setSpinner(false);
+      try {
+        const resp = await axios.post(ApiUrl + "login", Session);
+        console.log(resp.data);
+        localStorage.setItem("x-access-token", resp.data.token);
+        setLogin(true);
+        setSpinner(false);
+        if (resp.data.auth == true) {
+          history.push("/home");
+        } else {
           presentAlert({
             header: "Aviso",
             subHeader: "Importante!",
-            message: "Ocurrio un Error",
+            message: "Usuario no registrado",
             buttons: ["OK"],
           });
+          setSession({
+            user: "",
+            password: "",
+          });
         }
+      } catch (error) {
+        setLogin(true);
+        setSpinner(false);
+        presentAlert({
+          header: "Aviso",
+          subHeader: "Importante!",
+          message: "Ocurrio un Error",
+          buttons: ["OK"],
+        });
+      }
     };
 
-    const DatosUsuario = (e:React.ChangeEvent<HTMLInputElement>)=>{
+    const DatosUsuario = (e: React.ChangeEvent<HTMLInputElement>) => {
       let valor = e.target.value;
       let target = e.target.name;
-      let datos:any = Session;
+      let datos: any = Session;
       datos[target] = valor;
       setSession({ ...datos });
-    }
+    };
 
     useEffect(() => {
-      if (localStorage.getItem("x-access-token")) {
-        const token = localStorage.getItem("x-access-token");
-        try {
-            axios.get((ApiUrl + "auth"), {
+      if (navigator.onLine) {
+        if (localStorage.getItem("x-access-token")) {
+          const token = localStorage.getItem("x-access-token");
+          try {
+            axios
+              .get(ApiUrl + "auth", {
                 headers: {
-                    'x-access-token': `${token}`
-                }
-            }).then((res) => {
+                  "x-access-token": `${token}`,
+                },
+              })
+              .then((res) => {
                 console.log(res.data);
                 if (res.data != false) {
-                  console.log(res.data.auth)
-                  history.push('/home')
+                  console.log(res.data.auth);
+                  history.push("/home");
                 }
               });
-        } catch (error) {
-            console.log(error)
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log("No existe token");
         }
-      }else{
-        console.log("No existe token");
+      } else {
+        presentAlert({
+          header: "Aviso",
+          subHeader: "Importante!",
+          message: "Sin Conexión",
+          buttons: ["OK"],
+        });
       }
-    }, [])
+    }, []);
     
   return (
     <div className="grid-container">

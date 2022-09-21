@@ -9,7 +9,7 @@ function Item(props: Listprops) {
     <IonMenu className='ancho' side="end" contentId={props.lista._id}>
       <IonHeader >
         <IonToolbar className='headerItem'>
-          <IonTitle>Datos Item</IonTitle>
+          <IonTitle>Datos {props.lista.Paciente.nombre}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
