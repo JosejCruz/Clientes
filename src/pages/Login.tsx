@@ -5,6 +5,8 @@ import { Redirect, useHistory } from 'react-router';
 import Loading from '../common/Loading/Loading';
 import {ApiUrl} from '../service/api'
 
+import { Storage } from '@ionic/storage';
+
 function Login() {
     const [login, setLogin] = useState(true);
     const [Spinner, setSpinner] = useState(false);
@@ -13,18 +15,26 @@ function Login() {
       password: "",
     });
     const [presentAlert] = useIonAlert();
+    //----//----//----//
+    let TokenGlobal = '';
+
+
     let history = useHistory();
     const handleButton = async () => {
       setLogin(false);
       setSpinner(true);
+      const store = new Storage();
+      await store.create()
       try {
         const resp = await axios.post(ApiUrl + "login", Session);
         console.log(resp.data);
-        localStorage.setItem("x-access-token", resp.data.token);
+        TokenGlobal = resp.data.token
+        //await store.set('x-access-token', resp.data.token);
+        //localStorage.setItem("x-access-token", resp.data.token);
         setLogin(true);
         setSpinner(false);
         if (resp.data.auth == true) {
-          history.push("/home");
+          history.push("/home", TokenGlobal);
         } else {
           presentAlert({
             header: "Aviso",
@@ -59,28 +69,33 @@ function Login() {
 
     useEffect(() => {
       if (navigator.onLine) {
-        if (localStorage.getItem("x-access-token")) {
-          const token = localStorage.getItem("x-access-token");
-          try {
-            axios
-              .get(ApiUrl + "auth", {
-                headers: {
-                  "x-access-token": `${token}`,
-                },
-              })
-              .then((res) => {
-                console.log(res.data);
-                if (res.data != false) {
-                  console.log(res.data.auth);
-                  history.push("/home");
-                }
-              });
-          } catch (error) {
-            console.log(error);
+        const Main = async()=>{
+          const store = new Storage();
+          await store.create()
+          if (await store.get('x-access-token') != null || await store.get('x-access-token') != "") {
+            const token = await store.get('x-access-token')
+            try {
+              axios
+                .get(ApiUrl + "auth", {
+                  headers: {
+                    "x-access-token": `${token}`,
+                  },
+                })
+                .then((res) => {
+                  console.log(res.data);
+                  if (res.data != false) {
+                    console.log(res.data.auth);
+                    history.push("/home");
+                  }
+                });
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            console.log("No existe token");
           }
-        } else {
-          console.log("No existe token");
         }
+        Main();
       } else {
         presentAlert({
           header: "Aviso",
