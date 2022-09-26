@@ -1,32 +1,34 @@
 import { IonSearchbar, useIonAlert } from '@ionic/react';
 import axios from 'axios';
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import Loading from '../common/Loading/Loading';
 import { ApiUrl } from '../service/api';
 import './Home.css';
 import List from './List';
-import { Storage } from '@ionic/storage';
+//import { Storage } from '@ionic/storage';
 
-const Home: React.FC = (TokenGlobal) => {
+const Home: React.FC = () => {
   const [Spinner, setSpinner] = useState(false);
   const [Data, setData] = useState(false)
   const [Content, setContent] = useState({'Cargando': true, 'lista': []})
   const [presentAlert] = useIonAlert();
   let history = useHistory()
+  const location:any = useLocation();
   useEffect(() => {
     setSpinner(true);
     const Main = async() =>{
-      const store = new Storage();
-      await store.create()
-      if (await store.get('x-access-token') != null || await store.get('x-access-token') != "" || TokenGlobal != '') {
+      //const store = new Storage();
+      //await store.create()
+      console.log(location.state.token)
+      if (location.state.token != '') {
         //const token = await store.get('x-access-token')
-        console.log(TokenGlobal)
+        console.log(location.state.token)
         try {
           axios
             .get(ApiUrl + "content", {
               headers: {
-                "x-access-token": `${TokenGlobal}`,
+                "x-access-token": `${location.state.token}`,
               },
             })
             .then((res) => {
