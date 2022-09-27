@@ -5,6 +5,8 @@ import { Redirect, useHistory } from 'react-router';
 import Loading from '../common/Loading/Loading';
 import {ApiUrl} from '../service/api'
 
+import { StatusBar, Style } from '@capacitor/status-bar';
+
 function Login() {
     const [login, setLogin] = useState(true);
     const [Spinner, setSpinner] = useState(false);
@@ -14,6 +16,10 @@ function Login() {
     });
     const [presentAlert] = useIonAlert();
     let history = useHistory();
+    const hideStatusBar = async () => {
+      await StatusBar.hide();
+    };
+    hideStatusBar()
     const handleButton = async () => {
       setLogin(false);
       setSpinner(true);
