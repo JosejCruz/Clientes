@@ -84,3 +84,11 @@
     --background: #0D2E3D;
     color: white;
 }
+.button-secret{
+    border-radius: 50%;
+    --background: var(--background);
+    --background-activated: #0c0129;
+    display: flex;
+    position: fixed;
+    bottom: 0px;
+}

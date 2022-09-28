@@ -1,4 +1,6 @@
-import { useIonAlert } from '@ionic/react';
+import { useIonAlert, IonButton, IonIcon } from '@ionic/react';
+import { settingsOutline } from 'ionicons/icons';
+
 import axios from "axios";
 import React, { useEffect, useState } from 'react'
 import { Redirect, useHistory } from 'react-router';
@@ -6,6 +8,7 @@ import Loading from '../common/Loading/Loading';
 import {ApiUrl} from '../service/api'
 
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { settings } from 'cluster';
 
 function Login() {
     const [login, setLogin] = useState(true);
@@ -14,12 +17,14 @@ function Login() {
       user: "",
       password: "",
     });
+    const [count, setCount] = useState(0)
+    const [config, setConfig] = useState(false)
     const [presentAlert] = useIonAlert();
     let history = useHistory();
-    const hideStatusBar = async () => {
-      await StatusBar.hide();
-    };
-    hideStatusBar()
+    // const hideStatusBar = async () => {
+    //   await StatusBar.hide();
+    // };
+    // hideStatusBar()
     const handleButton = async () => {
       setLogin(false);
       setSpinner(true);
@@ -62,6 +67,17 @@ function Login() {
       datos[target] = valor;
       setSession({ ...datos });
     };
+    useEffect(() => {
+      if (count == 3) {
+        setConfig(true)
+      }
+    }, [count])
+    
+    const handleConfig = ()=>{
+      setCount(0)
+      setConfig(false)
+      history.push("/settings")
+    }
 
     useEffect(() => {
       if (navigator.onLine) {
@@ -100,10 +116,9 @@ function Login() {
   return (
     <div className="grid-container">
       <div className="grid-item-center logo-padding">
-        <img
+        <img onClick={() => setCount(count+1)}
           className="logo"
           src="./assets/img/logo512.png"
-          alt=""
           width={200}
         />
       </div>
@@ -136,6 +151,9 @@ function Login() {
           )) ||
             (Spinner && <Loading />)}
         </div>
+        {config && <IonButton shape="round" className="button-secret" size="small" onClick={handleConfig}>
+          <IonIcon slot="start" icon={settingsOutline}></IonIcon>
+        </IonButton>}
       </div>
     </div>
   );
