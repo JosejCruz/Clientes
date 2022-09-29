@@ -84,6 +84,8 @@
     --background: #0D2E3D;
     color: white;
 }
+
+/*Pantalla de configuracion*/
 .button-secret{
     border-radius: 50%;
     --background: var(--background);
@@ -91,4 +93,20 @@
     display: flex;
     position: fixed;
     bottom: 0px;
+}
+.config-input{
+    border: none;
+    width: 100vh;
+}
+.config-input:focus{
+    outline: none;
+}
+
+ion-thumbnail {
+    --size: 150px;
+    --border-radius: 14px;
+    text-align: center;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
 }

@@ -5,7 +5,6 @@ import axios from "axios";
 import React, { useEffect, useState } from 'react'
 import { Redirect, useHistory } from 'react-router';
 import Loading from '../common/Loading/Loading';
-import {ApiUrl} from '../service/api'
 
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { settings } from 'cluster';
@@ -19,6 +18,11 @@ function Login() {
     });
     const [count, setCount] = useState(0)
     const [config, setConfig] = useState(false)
+    const [Data, setData] = useState({
+      ApiUrl: "",
+      Logo: "",
+      Nombre: ""
+    })
     const [presentAlert] = useIonAlert();
     let history = useHistory();
     // const hideStatusBar = async () => {
@@ -29,7 +33,7 @@ function Login() {
       setLogin(false);
       setSpinner(true);
       try {
-        const resp = await axios.post(ApiUrl + "login", Session);
+        const resp = await axios.post(Data.ApiUrl + "login", Session);
         console.log(resp.data);
         localStorage.setItem("x-access-token", resp.data.token);
         setLogin(true);
@@ -81,27 +85,37 @@ function Login() {
 
     useEffect(() => {
       if (navigator.onLine) {
-        if (localStorage.getItem("x-access-token")) {
-          const token = localStorage.getItem("x-access-token");
-          try {
-            axios
-              .get(ApiUrl + "auth", {
-                headers: {
-                  "x-access-token": `${token}`,
-                },
-              })
-              .then((res) => {
-                console.log(res.data);
-                if (res.data != false) {
-                  console.log(res.data.auth);
-                  history.push("/home");
-                }
-              });
-          } catch (error) {
-            console.log(error);
+        if (localStorage.getItem('Data')) {
+          setData(JSON.parse(localStorage.getItem('Data')!))
+          if (localStorage.getItem("x-access-token")) {
+            const token = localStorage.getItem("x-access-token");
+            try {
+              axios
+                .get(Data.ApiUrl + "auth", {
+                  headers: {
+                    "x-access-token": `${token}`,
+                  },
+                })
+                .then((res) => {
+                  console.log(res.data);
+                  if (res.data != false) {
+                    console.log(res.data.auth);
+                    history.push("/home");
+                  }
+                });
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            console.log("No existe token");
           }
-        } else {
-          console.log("No existe token");
+        }else{
+          presentAlert({
+            header: "Aviso",
+            subHeader: "Error",
+            message: "se necesita configurar la conexión",
+            buttons: ["OK"],
+          });
         }
       } else {
         presentAlert({
@@ -118,7 +132,7 @@ function Login() {
       <div className="grid-item-center logo-padding">
         <img onClick={() => setCount(count+1)}
           className="logo"
-          src="./assets/img/logo512.png"
+          src={Data.Logo == ""? "./assets/img/logo512.png": Data.Logo}
           width={200}
         />
       </div>
