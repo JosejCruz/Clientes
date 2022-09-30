@@ -1,6 +1,7 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonImg, IonInput, IonItem, IonItemDivider, IonList, IonMenu, IonMenuButton, IonPage, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react'
+import { IonButton, IonButtons, IonContent, IonHeader, IonImg, IonInput, IonItem, IonItemDivider, IonList, IonMenu, IonMenuButton, IonPage, IonThumbnail, IonTitle, IonToolbar, useIonAlert } from '@ionic/react'
 import React, { useEffect, useState } from 'react'
 import ReactImageFileToBase64 from "react-file-image-to-base64";
+import { useHistory } from 'react-router';
 interface image{
   file_name: "",
     file_size: "",
@@ -10,6 +11,7 @@ interface image{
     default_file: {}
 }
 function Settings() {
+  const [presentAlert] = useIonAlert();
 
     const [Datos, setDatos] = useState({
       ApiUrl: "",
@@ -17,6 +19,7 @@ function Settings() {
       Logo: "",
     });
     console.log(Datos)
+    let history = useHistory();
     useEffect(() => {
       if (localStorage.getItem("Data")) {
         const Data = JSON.parse(localStorage.getItem("Data")!);
@@ -40,6 +43,27 @@ function Settings() {
       setDatos({ ...datos });
     };
     const handlebuttonsave = ()=>{
+      if (Datos.ApiUrl != '') {
+        localStorage.setItem('Data', JSON.stringify(Datos))
+        presentAlert({
+          header: "Aviso",
+          subHeader: "Notificación",
+          message: "Datos Guardados correctamente",
+          buttons: ["OK"],
+        });
+        history.push('/')
+        window.location.reload()
+      }else{
+        presentAlert({
+          header: "Aviso",
+          subHeader: "Error",
+          message: "Debe configurar Dirección de servidor",
+          buttons: ["OK"],
+        });
+      }
+    }
+    const handlebuttoncancel = ()=>{
+      history.push("/");
     }
 
   return (
@@ -92,7 +116,7 @@ function Settings() {
         <IonButton shape="round" expand="block" onClick={handlebuttonsave}>
           Guardar
         </IonButton>
-        <IonButton shape="round" expand="block" color={"danger"}>
+        <IonButton shape="round" expand="block" color={"danger"} onClick={handlebuttoncancel}>
           Cancelar
         </IonButton>
       </IonPage>
