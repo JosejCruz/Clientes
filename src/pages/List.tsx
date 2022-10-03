@@ -1,14 +1,45 @@
-import { IonItem, IonLabel, IonMenuToggle } from '@ionic/react'
+import { IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonMenuToggle, useIonAlert } from '@ionic/react'
+import { exitOutline } from 'ionicons/icons';
 import React, { useState } from 'react'
+import { useHistory } from 'react-router';
 import Item from '../components/Item';
 interface Listprops{
-  'Content': {'Cargando': boolean, 'lista': any[]}
+  'Content': {'lista': any[]}
 }
 function List(props:Listprops) {
+  const [presentAlert] = useIonAlert();
+  const [handlerMessage, setHandlerMessage] = useState(false);
+
   const [indice, setIndice] = useState(0)
   let data = props.Content.lista;
   const handleButton = (index: number) => {
     setIndice(index)
+  }
+  if (handlerMessage) {
+    localStorage.removeItem("x-access-token");
+    console.log(handlerMessage)
+    window.location.reload();
+  }
+  const handleexitbutton = ()=>{
+    presentAlert({
+      header: 'Cerrar Sesión?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            setHandlerMessage(false);
+          },
+        },
+        {
+          text: 'OK',
+          role: 'confirm',
+          handler: () => {
+            setHandlerMessage(true);
+          },
+        },
+      ]
+    })
   }
   return (
     <>
@@ -24,6 +55,11 @@ function List(props:Listprops) {
         </div>
       );
     })}
+    <IonFab vertical="bottom" horizontal="end" slot="fixed">
+          <IonFabButton onClick={handleexitbutton}>
+            <IonIcon icon={exitOutline} />
+          </IonFabButton>
+        </IonFab>
     </>
   );
 }

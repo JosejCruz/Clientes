@@ -10,7 +10,7 @@ import List from './List';
 const Home: React.FC = () => {
   const [Spinner, setSpinner] = useState(false);
   const [Data, setData] = useState(false)
-  const [Content, setContent] = useState({'Cargando': true, 'lista': []})
+  const [Content, setContent] = useState({'lista': []})
   const [presentAlert] = useIonAlert();
   let history = useHistory()
   useEffect(() => {
@@ -33,7 +33,7 @@ const Home: React.FC = () => {
             } else {
               setSpinner(false);
               setData(true);
-              setContent({ Cargando: false, lista: res.data });
+              setContent({lista: res.data });
             }
           }).catch((error) => {
             console.log(error.response.status)

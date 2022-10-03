@@ -2,13 +2,13 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonImg, IonInput, IonItem
 import React, { useEffect, useState } from 'react'
 import ReactImageFileToBase64 from "react-file-image-to-base64";
 import { useHistory } from 'react-router';
-interface image{
-  file_name: "",
-    file_size: "",
-    file_type: "",
-    last_modified: "",
-    base64_file: "",
-    default_file: {}
+interface image {
+  file_name: "";
+  file_size: "";
+  file_type: "";
+  last_modified: "";
+  base64_file: "";
+  default_file: {};
 }
 function Settings() {
   const [presentAlert] = useIonAlert();

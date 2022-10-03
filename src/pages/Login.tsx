@@ -84,48 +84,43 @@ function Login() {
     }
 
     useEffect(() => {
-      if (navigator.onLine) {
-        if (localStorage.getItem('Data')) {
-          setData(JSON.parse(localStorage.getItem('Data')!))
-          if (localStorage.getItem("x-access-token")) {
-            const token = localStorage.getItem("x-access-token");
-            try {
-              axios
-                .get(Data.ApiUrl + "auth", {
-                  headers: {
-                    "x-access-token": `${token}`,
-                  },
-                })
-                .then((res) => {
-                  console.log(res.data);
-                  if (res.data != false) {
-                    console.log(res.data.auth);
-                    history.push("/home");
-                  }
-                });
-            } catch (error) {
-              console.log(error);
-            }
-          } else {
-            console.log("No existe token");
+      if (localStorage.getItem("Data")) {
+        setData(JSON.parse(localStorage.getItem("Data")!));
+        if (localStorage.getItem("x-access-token")) {
+          const token = localStorage.getItem("x-access-token");
+          console.log(token);
+          console.log(Data.ApiUrl);
+          try {
+            axios
+              .get(Data.ApiUrl + "auth", {
+                headers: {
+                  "x-access-token": `${token}`,
+                },
+              })
+              .then((res) => {
+                //console.log(res.data);
+                if (res.data != false) {
+                  //localStorage.removeItem('x-access-token')
+                  localStorage.setItem("x-access-token", res.data.token);
+                  //console.log(res.data);
+                  history.push("/home");
+                }
+              });
+          } catch (error) {
+            console.log(error);
           }
-        }else{
-          presentAlert({
-            header: "Aviso",
-            subHeader: "Error",
-            message: "se necesita configurar la conexión",
-            buttons: ["OK"],
-          });
+        } else {
+          console.log("No existe token");
         }
       } else {
         presentAlert({
           header: "Aviso",
-          subHeader: "Importante!",
-          message: "Sin Conexión",
+          subHeader: "Error",
+          message: "se necesita configurar la conexión",
           buttons: ["OK"],
         });
       }
-    }, []);
+    }, [Data.Logo,Data.ApiUrl]);
     
   return (
     <div className="grid-container">
