@@ -13,6 +13,42 @@ const Home: React.FC = () => {
   const [Content, setContent] = useState({'lista': []})
   const [presentAlert] = useIonAlert();
   let history = useHistory()
+
+  //----//--filtrar busqueda--//----//
+
+  const [dato, setDato] = useState('')
+  const handlesearchchange = (ev: any) => {
+    setDato(ev.target.value)
+    //funcion para filtrar datos
+    // let query = "";
+    // const target = ev.target as HTMLIonSearchbarElement;
+    // if (target) query = target.value!.toLowerCase();
+    // console.log(query)
+    // let filtrado:any[] = []
+    // console.log(Content.lista.filter(cont => cont))
+    // Content.lista.forEach((item)=>{
+    //   if (condition) {
+        
+    //   }
+    // })
+
+    //console.log(Content.lista.filter(cont => cont))
+
+    //setResults(Content.lista.filter(c.Paciente.nombre => c.Paciente.nombre.toLowerCase(query)))
+
+    //setResults(Content.lista.filter(d.Paciente.nombre => d.Paciente.nombre.toLowerCase()));
+  }
+  
+  let filtrado:any = {lista: []}
+  Content.lista.forEach((item:any)=>{
+    if (item.Paciente.nombre.toLowerCase().indexOf(dato.toLowerCase()) > -1) {
+      filtrado.lista.push(item)
+    }
+  })
+  console.log(filtrado)
+
+  //----//----//----//
+
   useEffect(() => {
     setSpinner(true);
     if (localStorage.getItem("x-access-token")) {
@@ -63,6 +99,7 @@ const Home: React.FC = () => {
       <div className="grid-container home">
         <div className="grid-item-center">
           <IonSearchbar
+            onIonChange={(ev) => handlesearchchange(ev)}
             placeholder="Buscar"
             animated
             color={"light"}
@@ -71,7 +108,7 @@ const Home: React.FC = () => {
       </div>
       <div className="grid-container">
         <div className="grid-item-center">{Spinner && <Loading />}</div>
-        {Data && <List Content={Content} />}
+        {Data && <List Content={filtrado} />}
       </div>
     </>
   );

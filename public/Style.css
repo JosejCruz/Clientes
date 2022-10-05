@@ -94,9 +94,12 @@
     position: fixed;
     bottom: 0px;
 }
-.config-input{
+.config-input {
     border: none;
     width: 100vh;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
 }
 .config-input:focus{
     outline: none;

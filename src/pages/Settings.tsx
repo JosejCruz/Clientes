@@ -64,6 +64,7 @@ function Settings() {
     }
     const handlebuttoncancel = ()=>{
       history.push("/");
+      window.location.reload()
     }
 
   return (
@@ -86,9 +87,9 @@ function Settings() {
                 type="text"
               />
             </IonItem>
-            <IonItemDivider
+            {/* <IonItemDivider
               style={{ backgroundColor: "transparent" }}
-            ></IonItemDivider>
+            ></IonItemDivider> */}
             <IonItem>
               <input
                 className="config-input"
