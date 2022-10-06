@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useHistory } from 'react-router';
 import Loading from '../common/Loading/Loading';
-import { ApiUrl } from '../service/api';
+//import { ApiUrl } from '../service/api';
 import './Home.css';
 import List from './List';
 
@@ -13,6 +13,11 @@ const Home: React.FC = () => {
   const [Content, setContent] = useState({'lista': []})
   const [presentAlert] = useIonAlert();
   let history = useHistory()
+  const [config, setConfig] = useState({
+    ApiUrl: "",
+    Logo: "",
+    Nombre: ""
+  })
 
   //----//--filtrar busqueda--//----//
 
@@ -52,10 +57,13 @@ const Home: React.FC = () => {
   useEffect(() => {
     setSpinner(true);
     if (localStorage.getItem("x-access-token")) {
+      setConfig(JSON.parse(localStorage.getItem('Data')!))
       const token = localStorage.getItem("x-access-token");
+      console.log(token)
+      console.log(config);
       try {
         axios
-          .get(ApiUrl + "content", {
+          .get(config.ApiUrl + "content", {
             headers: {
               "x-access-token": `${token}`,
             },
@@ -72,7 +80,7 @@ const Home: React.FC = () => {
               setContent({lista: res.data });
             }
           }).catch((error) => {
-            console.log(error.response.status)
+            console.log(error.response)
             if (error.response.status == 401) {
               setSpinner(false)
               presentAlert({
@@ -92,7 +100,7 @@ const Home: React.FC = () => {
       setSpinner(false);
       history.push("/login");
     }
-  }, []);
+  }, [config.ApiUrl]);
 
   return (
     <>
