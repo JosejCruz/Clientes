@@ -12,6 +12,7 @@ function List(props:Listprops) {
 
   const [indice, setIndice] = useState(0)
   let data = props.Content.lista;
+  //console.log(JSON.stringify(data));
   const handleButton = (index: number) => {
     setIndice(index)
   }
@@ -41,27 +42,31 @@ function List(props:Listprops) {
       ]
     })
   }
-  return (
-    <>
-      <Item lista={data[indice]} />
-    {data.map((contenido, index) => {
-      return (
-        <div key={contenido._id}>
-          <IonMenuToggle id={contenido._id}>
-            <IonItem button onClick={() => { handleButton(index)}}>
-              <IonLabel>{contenido.Paciente.nombre} {index}</IonLabel>
-            </IonItem>
-          </IonMenuToggle>
-        </div>
-      );
-    })}
-    <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton onClick={handleexitbutton}>
-            <IonIcon icon={exitOutline} />
-          </IonFabButton>
-        </IonFab>
-    </>
-  );
+  if(JSON.stringify(data) === '[]'){
+    return(<p>Sin Resultados</p>)
+  }else{
+    return (
+      <>
+        <Item lista={data[indice]} />
+      {data.map((contenido, index) => {
+        return (
+          <div key={contenido._id}>
+            <IonMenuToggle id={contenido._id}>
+              <IonItem button onClick={() => { handleButton(index)}}>
+                <IonLabel>{contenido.Paciente.nombre} {index}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+          </div>
+        );
+      })}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+            <IonFabButton onClick={handleexitbutton}>
+              <IonIcon icon={exitOutline} />
+            </IonFabButton>
+          </IonFab>
+      </>
+    )
+  }
 }
 
 export default List
