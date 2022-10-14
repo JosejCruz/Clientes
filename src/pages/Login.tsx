@@ -3,7 +3,7 @@ import { settingsOutline } from 'ionicons/icons';
 
 import axios from "axios";
 import React, { useEffect, useState } from 'react'
-import { Redirect, useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 import Loading from '../common/Loading/Loading';
 
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -35,10 +35,10 @@ function Login() {
       try {
         const resp = await axios.post(Data.ApiUrl + "login", Session);
         console.log(resp.data);
-        localStorage.setItem("x-access-token", resp.data.token);
         setLogin(true);
         setSpinner(false);
         if (resp.data.auth == true) {
+          localStorage.setItem("x-access-token", resp.data.token);
           history.push("/home");
         } else {
           presentAlert({

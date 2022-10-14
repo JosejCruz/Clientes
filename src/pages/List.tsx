@@ -11,6 +11,7 @@ function List(props:Listprops) {
   const [handlerMessage, setHandlerMessage] = useState(false);
 
   const [indice, setIndice] = useState(0)
+  let history = useHistory()
   let data = props.Content.lista;
   //console.log(JSON.stringify(data));
   const handleButton = (index: number) => {
@@ -19,6 +20,7 @@ function List(props:Listprops) {
   if (handlerMessage) {
     localStorage.removeItem("x-access-token");
     console.log(handlerMessage)
+    history.push('/')
     window.location.reload();
   }
   const handleexitbutton = ()=>{

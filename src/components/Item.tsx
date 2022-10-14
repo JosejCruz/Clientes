@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonItem, IonItemDivider, IonLabel, IonList, IonListHeader, IonMenu, IonTitle, IonToolbar } from '@ionic/react'
+import { IonContent, IonHeader, IonItem, IonLabel, IonList, IonMenu, IonTitle, IonToolbar } from '@ionic/react'
 import React from 'react'
 interface Listprops{
   'lista': any
@@ -9,7 +9,7 @@ function Item(props: Listprops) {
     <IonMenu className='ancho' side="end" contentId={props.lista._id}>
       <IonHeader >
         <IonToolbar className='headerItem'>
-          <IonTitle>Datos {props.lista.Paciente.nombre}</IonTitle>
+          <IonTitle>Paciente {props.lista.Paciente.nombre}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>

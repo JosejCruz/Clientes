@@ -1,6 +1,6 @@
 import { IonSearchbar, useIonAlert } from '@ionic/react';
 import axios from 'axios';
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Loading from '../common/Loading/Loading';
 //import { ApiUrl } from '../service/api';
@@ -13,11 +13,6 @@ const Home: React.FC = () => {
   const [Content, setContent] = useState({'lista': []})
   const [presentAlert] = useIonAlert();
   let history = useHistory()
-  const [config, setConfig] = useState({
-    ApiUrl: "",
-    Logo: "",
-    Nombre: ""
-  })
 
   //----//--filtrar busqueda--//----//
 
@@ -53,19 +48,19 @@ const Home: React.FC = () => {
   console.log(filtrado)
 
   //----//----//----//
+  const token = localStorage.getItem('x-access-token')!
+  const conf = JSON.parse(localStorage.getItem('Data')!)
 
   useEffect(() => {
     setSpinner(true);
-    if (localStorage.getItem("x-access-token")) {
-      setConfig(JSON.parse(localStorage.getItem('Data')!))
-      const token = localStorage.getItem("x-access-token");
-      console.log(token)
-      console.log(config);
+    console.log(token)
+    //setConfig(conf)
+    if ((token != null && conf !== undefined) || token != '' || token != undefined) {
       try {
         axios
-          .get(config.ApiUrl + "content", {
+          .get(conf.ApiUrl + "content", {
             headers: {
-              "x-access-token": `${token}`,
+              "x-access-token": `${token}`
             },
           })
           .then((res) => {
@@ -74,6 +69,7 @@ const Home: React.FC = () => {
               setSpinner(false);
               console.log(res.data.auth);
               history.push("/login");
+              window.location.reload()
             } else {
               setSpinner(false);
               setData(true);
@@ -86,10 +82,11 @@ const Home: React.FC = () => {
               presentAlert({
                 header: "Aviso",
                 subHeader: "Importante!",
-                message: "La sesión expiró",
+                message: "La sesión expiró " + token,
                 buttons: ["OK"],
               });
-              history.push("/login")
+              history.push("/")
+              window.location.reload()
             }
           })
       } catch (error) {
@@ -98,9 +95,10 @@ const Home: React.FC = () => {
     } else {
       console.log("No existe token");
       setSpinner(false);
-      history.push("/login");
+      history.push("/");
+      window.location.reload()
     }
-  }, [config.ApiUrl]);
+  }, []);
 
   return (
     <>
