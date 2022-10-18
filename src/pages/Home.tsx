@@ -2,6 +2,7 @@ import { IonSearchbar, useIonAlert } from '@ionic/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
+import { useLocation } from "react-router-dom";
 import Loading from '../common/Loading/Loading';
 //import { ApiUrl } from '../service/api';
 import './Home.css';
@@ -46,7 +47,9 @@ const Home: React.FC = () => {
     }
   })
   console.log(filtrado)
-
+  //----//----//----//
+  const location:any = useLocation();
+  console.log(location);
   //----//----//----//
   const token = localStorage.getItem('x-access-token')!
   const conf = JSON.parse(localStorage.getItem('Data')!)
@@ -55,7 +58,26 @@ const Home: React.FC = () => {
     setSpinner(true);
     console.log(token)
     //setConfig(conf)
-    if ((token != null && conf !== undefined) || token != '' || token != undefined) {
+    if (token != undefined && token != null && conf != undefined) {
+      console.log(conf)
+      const renovar =async () => {
+        const resp = await axios.get(conf.ApiUrl + 'auth', {
+          headers: {
+            'x-access-token' : `${token}`
+          }
+        })
+        if (resp.data.auth == true) {
+          localStorage.setItem('x-access-token', resp.data.token)
+        }else{
+          presentAlert({
+            header: "Aviso",
+            subHeader: "Importante!",
+            message: "Ocurrio un error al actualizar token",
+            buttons: ["OK"],
+          });
+        }
+      }
+      renovar()
       try {
         axios
           .get(conf.ApiUrl + "content", {
@@ -85,6 +107,7 @@ const Home: React.FC = () => {
                 message: "La sesión expiró " + token,
                 buttons: ["OK"],
               });
+              localStorage.removeItem("x-access-token");
               history.push("/")
               window.location.reload()
             }
@@ -93,6 +116,7 @@ const Home: React.FC = () => {
         console.log(error);
       }
     } else {
+      localStorage.removeItem("x-access-token");
       console.log("No existe token");
       setSpinner(false);
       history.push("/");
