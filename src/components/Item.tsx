@@ -10,6 +10,7 @@ function Item(props: Listprops) {
   }
   const handleButtonCancel = () =>{
     console.log('cancelar id: ' + props.lista._id)
+    window.location.reload()
   }
   return (
     <IonMenu className='ancho' side="end" contentId={props.lista._id}>
@@ -22,25 +23,11 @@ function Item(props: Listprops) {
         <IonList>
           <IonItem>
             <IonLabel>Estado</IonLabel>
-          <IonSelect interface='popover' placeholder='Estado'>
+          <IonSelect interface='popover' placeholder='Estado' value={props.lista.Tipo}>
             <IonSelectOption value={'Preregistro'}>Pre-registro</IonSelectOption>
             <IonSelectOption value={'Ingresado'}>Ingresado</IonSelectOption>
           </IonSelect>
           </IonItem>
-          <IonItem>Estado = {props.lista.Tipo}</IonItem>
-          <IonItem>Nombre: = {props.lista.Paciente.nombre}</IonItem>
-          <IonList>
-            <IonItem>
-            <IonLabel>
-              <h1>Lista Estudios</h1>
-            </IonLabel>
-            </IonItem>
-          {props.lista.ListaEstudios.map((contenido:any, index:any)=>{
-            return(
-              <IonItem key={index}>{contenido.nombreMod}</IonItem>
-            )
-          })}
-          </IonList>
             <IonAccordionGroup>
               <IonAccordion value='Estudios'>
                 <IonItem slot='header' color={'light'}>
@@ -55,6 +42,12 @@ function Item(props: Listprops) {
                 })}
               </IonAccordion>
             </IonAccordionGroup>
+            <IonItem>
+          <IonSelect interface='popover' placeholder='Estudios' multiple={true}>
+            <IonSelectOption value={'Preregistro'}>Pre-registro</IonSelectOption>
+            <IonSelectOption value={'Ingresado'}>Ingresado</IonSelectOption>
+          </IonSelect>
+          </IonItem>
         </IonList>
       </IonContent>
       <IonFooter>
