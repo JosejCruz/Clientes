@@ -1,4 +1,5 @@
 import { IonAccordion, IonAccordionGroup, IonButton, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react'
+import { caretDownCircle } from 'ionicons/icons';
 import React from 'react'
 interface Listprops{
   'lista': any
@@ -29,23 +30,31 @@ function Item(props: Listprops) {
           </IonSelect>
           </IonItem>
             <IonAccordionGroup>
-              <IonAccordion value='Estudios'>
+              <IonAccordion toggleIcon={caretDownCircle} toggleIconSlot='end' value='Estudios'>
                 <IonItem slot='header' color={'light'}>
                   <IonLabel>Lista de Estudios</IonLabel>
                 </IonItem>
                 {props.lista.ListaEstudios.map((contenido:any, index:any)=>{
                   return(
                     <div key={index} className='ion-padding' slot='content'>
+                      <IonItem>
                       {contenido.nombreMod}
+                      <IonButton fill='outline' size='small' shape='round' color={'danger'} slot='end'>
+                        <IonIcon icon='trash-outline'></IonIcon>
+                      </IonButton>
+                      </IonItem>
                     </div>
                   )
                 })}
               </IonAccordion>
             </IonAccordionGroup>
             <IonItem>
-          <IonSelect interface='popover' placeholder='Estudios' multiple={true}>
-            <IonSelectOption value={'Preregistro'}>Pre-registro</IonSelectOption>
-            <IonSelectOption value={'Ingresado'}>Ingresado</IonSelectOption>
+          <IonSelect interface='popover' placeholder='Añadir Estudios' multiple={true}>
+            {props.lista.ListaEstudios.map((contenido:any, index:any)=>{
+              return(
+                <IonSelectOption key={index} value={contenido.nombreMod}>{contenido.nombreMod}</IonSelectOption>
+              )
+            })}
           </IonSelect>
           </IonItem>
         </IonList>
